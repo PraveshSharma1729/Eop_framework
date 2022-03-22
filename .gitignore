@@ -39,3 +39,6 @@
 # Images
 *.pdf
 *.png
+
+# build directory
+build
