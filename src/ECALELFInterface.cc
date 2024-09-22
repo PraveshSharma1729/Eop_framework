@@ -13,7 +13,7 @@ void ECALELFInterface::BranchSelected(TChain* chain)
   chain->SetBranchAddress("lumiBlock",          &lumiBlock_);
   chain->SetBranchAddress("eventTime",          &eventTime_);
   chain->SetBranchAddress("eventNumber",        &eventNumber_);
-  chain->SetBranchAddress("chargeEle",          chargeEle_);
+  chain->SetBranchAddress("chargeEle",          chargeEle_); ///SJ
   chain->SetBranchAddress("etaEle",             etaEle_);
   chain->SetBranchAddress("phiEle",             phiEle_);
   chain->SetBranchAddress("rawEnergySCEle",     rawEnergySCEle_);
@@ -69,13 +69,15 @@ ECALELFInterface::ECALELFInterface(CfgManager conf):
   { 
     ch_[treename] = new TBetterChain(treename.c_str(),treename.c_str());
     std::vector<std::string> filelist = conf.GetOpt<std::vector<std::string> >(Form("Input.%s.filelist",treename.c_str()));
-    for(auto filename : filelist)
+    for(auto filename : filelist){
       ch_[treename]->Add(filename.c_str());
+    }
     if(treename=="selected")
       BranchSelected(ch_[treename]);
     else
-      if(treename=="extraCalibTree")
+      if(treename=="extraCalibTree"){
 	BranchExtraCalib(ch_[treename]);
+      }
       else
 	cerr<<"[WARNING]: unknown tree "<<treename<<endl;
   }
@@ -85,7 +87,8 @@ ECALELFInterface::ECALELFInterface(CfgManager conf):
   {
     cout << ">>> Adding chain " << treelist.at(nchain) << " as friend to chain " << treelist.at(0) << endl;
     assert(Nentries == ch_[treelist.at(nchain)]->GetEntries());
-    ch_[treelist.at(0)]->AddFriend(treelist.at(nchain).c_str(),"");
+    //ch_[treelist.at(0)]->AddFriend(treelist.at(nchain).c_str(),"");
+    ch_[treelist.at(0)]->AddFriend(ch_[treelist.at(nchain)],"");
     //ch_[treelist.at(0)]->BuildIndex("runNumber","eventNumber");
   }
   chain_=ch_[treelist.at(0)];

@@ -162,8 +162,10 @@ int main(int argc, char* argv[])
   
   for(Long64_t ientry=ientry0 ; ientry<Nentries ; ientry+=ientry_increment)
   {
+    ///SJ
     if( ientry%100000==0 || (ientry-1)%100000==0)
       std::cout << "Processing entry "<< ientry << "\r" << std::flush;
+    
     calorimeter->GetEntry(ientry);
     for(int iEle=0;iEle<2;++iEle)
     {
@@ -171,6 +173,7 @@ int main(int argc, char* argv[])
       {
 	E=calorimeter->GetICEnergy(iEle);
 	p=calorimeter->GetPcorrected(iEle);
+	
 	if(!EE)
 	  ietaSeed=calorimeter->GetietaSeed(iEle);
 	else

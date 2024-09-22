@@ -18,12 +18,18 @@ print("-------------------------------------------------------------------------
 
 #parameters
 current_dir = os.getcwd();
-ntuple_dir = "/eos/cms/store/group/dpg_ecal/alca_ecalcalib/ecalelf/ntuples/13TeV/ALCARERECO/103X_dataRun2_v6_ULBaseForICs_newRegV1/"#parent folder containing all the ntuples of interest
+#ntuple_dir = "/eos/cms/store/group/dpg_ecal/alca_ecalcalib/ecalelf/ntuples/13TeV/ALCARERECO/103X_dataRun2_v6_ULBaseForICs_newRegV1/"#parent folder containing all the ntuples of interest
 #ntuple_dir = "/eos/cms/store/group/dpg_ecal/alca_ecalcalib/ecalelf/ntuples/13TeV/ALCARERECO/102X_dataRun2_Sep2018Rereco_harnessCorr_newReg/"
 #ntuple_dir="/home/fabio/work/Eop_framework/data/"
-tag_list = ["Run2016B","Run2016C","Run2016D","Run2016E","Run2016F","Run2016G","Run2016H"]#tag for the monitoring = any label in the ntuple path identifying univoquely the ntuples of interest
+#tag_list = ["Run2016B","Run2016C","Run2016D","Run2016E","Run2016F","Run2016G","Run2016H"]#tag for the monitoring = any label in the ntuple path identifying univoquely the ntuples of interest
 #tag_list = ["Run2017C"] #tag for the monitoring
-ignored_ntuples_label_list = ["obsolete"]#ntuples containing anywhere in the path these labels will be ignored (eg ntuples within a tag containing some error)
+#ignored_ntuples_label_list = ["obsolete"]#ntuples containing anywhere in the path these labels will be ignored (eg ntuples within a tag containing some error)
+
+ignored_ntuples_label_list = ["merged", "jsonFilter", "Run2022A", "Run2022C", "Run2022D", "Run2022E", "Run2022F", "Run2022G"]
+
+#ntuple_dir = "/eos/cms/store/group/dpg_ecal/alca_ecalcalib/ecalelf/ntuples/wangchu/2023IC/13.6TeV/124X_dataRun3_v15_newTiming_pulse_IC/Run2022G-EcalUncalZElectron-PromptReco-v1/allRange/"
+ntuple_dir = "/eos/cms/store/group/dpg_ecal/alca_ecalcalib/ecalelf/ntuples/wangchu/2023IC/13.6TeV/124X_dataRun3_v15_newTiming_pulse_IC/"
+tag_list = ["Run2022B"]
 
 
 #parse arguments
@@ -62,22 +68,23 @@ os.system("mkdir -p "+str(options.outdir))
 
 #get ntuples for the calibration
 selected_filelist,extracalibtree_filelist = findFiles.findFiles(ntuple_dir,"unmerged",tag_list,ignored_ntuples_label_list)
+#selected_filelist,extracalibtree_filelist = findFiles.findFiles(ntuple_dir,"allRange",tag_list,ignored_ntuples_label_list)
 
 if (len(selected_filelist)>0):
-    print
+#    print
     print("Run calibration on "+str(len(selected_filelist))+" files:")
     if(options.verbosity>=1):
         print("-----------------------")
         for filename in selected_filelist:
-            print filename 
+            print(filename )
         print("-----------------------")
         print("auto-generated extraCalibTree filelist")
         for filename in extracalibtree_filelist:
-            print filename 
+            print(filename) 
         print("-----------------------")
 
 else:
-    print
+#    print
     print("NOT any file found --> EXIT")
     sys.exit()
 
@@ -85,9 +92,9 @@ else:
 if len(selected_filelist)>200:
     selected_filelist, extracalibtree_filelist = findFiles.groupFiles(selected_filelist, extracalibtree_filelist, int(len(selected_filelist)/100) )
     if(options.verbosity>=1):
-        print "grouped files"
+        print("grouped files")
         for filename in selected_filelist:
-            print filename 
+            print(filename) 
 
 #create folder for the job
 job_parent_folder=current_dir+"/jobs/"+str(options.label)+"/"
@@ -162,7 +169,7 @@ for iLoop in range(options.RestartFromLoop,options.Nloop):
                 outScript = open(outScriptName,"w")
                 outScript.write("#!/bin/bash\n")
                 #outScript.write('source setup.sh\n')
-                outScript.write("cd /afs/cern.ch/work/f/fmonti/flashggNew/CMSSW_10_5_0/\n")
+                outScript.write("cd /tmp/shilpi/CMSSW_14_0_9_patch2/\n")
                 outScript.write('eval `scram runtime -sh`\n');
                 outScript.write("cd -\n");
                 outScript.write("echo $PWD\n");
@@ -200,7 +207,7 @@ for iLoop in range(options.RestartFromLoop,options.Nloop):
             mergescriptName=job_parent_folder+"/merge_"+task+"_loop_"+str(iLoop)+".sh"
             mergescript = open( mergescriptName,"w")
             mergescript.write("#!/bin/bash\n")
-            mergescript.write("cd /afs/cern.ch/work/f/fmonti/flashggNew/CMSSW_10_5_0/\n")
+            mergescript.write("cd /tmp/shilpi/CMSSW_14_0_9_patch2/\n")
             mergescript.write('eval `scram runtime -sh`\n');
             mergescript.write("cd -\n");
             mergescript.write("hadd -f -k "+str(options.outdir)+"/EopEta_loop_"+str(iLoop)+".root "+str(options.outdir)+"/EopEta_loop_"+str(iLoop)+"_file_*_*.root\n")
@@ -211,7 +218,7 @@ for iLoop in range(options.RestartFromLoop,options.Nloop):
             mergescriptName=job_parent_folder+"/merge_"+task+"_loop_"+str(iLoop)+".sh"
             mergescript = open( mergescriptName,"w")
             mergescript.write("#!/bin/bash\n")
-            mergescript.write("cd /afs/cern.ch/work/f/fmonti/flashggNew/CMSSW_10_5_0/\n")
+            mergescript.write("cd /tmp/shilpi/CMSSW_14_0_9_patch2/\n")
             mergescript.write('eval `scram runtime -sh`\n');
             mergescript.write("cd -\n");
             mergescript.write("hadd -f -k "+str(options.outdir)+"/IC_loop_"+str(iLoop)+".root "+str(options.outdir)+"/IC_loop_"+str(iLoop)+"_file_*_*.root\n")

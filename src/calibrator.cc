@@ -14,11 +14,14 @@ calibrator::calibrator(CfgManager conf):
 
   //-------------------------------------
   //load momentum correction if present in cfg
-  if(conf.OptExist("Input.MomentumCorrection"))
+  if(conf.OptExist("Input.MomentumCorrection")){
+    useMomentumCorrector_ = true;
     LoadMomentumCorrection(conf.GetOpt<std::string> ("Input.MomentumCorrection"));
-  else
+  }
+  else{
+    useMomentumCorrector_ = false;
     cout<<"[WARNING]: no Input.MomentumCorrection found in cfg file"<<endl;
-
+  }
   //-------------------------------------
   //load E/p event weight if present in cfg
   if(conf.OptExist("Input.Eopweight"))
@@ -174,7 +177,10 @@ Float_t calibrator::GetPcorrectedEE(const Int_t &i)
 #endif
   if(chargeEle_[i]==-1)
   {
-    float pCORR = pAtVtxGsfEle_[i]/electron_momentum_correction_->Eval(phiEle_[i]) - EScorrection_*esEnergySCEle_[i];
+    float pCORR = pAtVtxGsfEle_[i];
+     if(useMomentumCorrector_)
+       pCORR = pAtVtxGsfEle_[i]/electron_momentum_correction_->Eval(phiEle_[i]) - EScorrection_*esEnergySCEle_[i];
+     
     if(pCORR>0)
       return pCORR;
     else
@@ -182,7 +188,10 @@ Float_t calibrator::GetPcorrectedEE(const Int_t &i)
   }
   if(chargeEle_[i]==+1)
   {
-    float pCORR= pAtVtxGsfEle_[i]/positron_momentum_correction_->Eval(phiEle_[i]) - EScorrection_*esEnergySCEle_[i];
+    float pCORR= pAtVtxGsfEle_[i];
+    if(useMomentumCorrector_)
+      pCORR= pAtVtxGsfEle_[i]/positron_momentum_correction_->Eval(phiEle_[i]) - EScorrection_*esEnergySCEle_[i];
+    
     if(pCORR>0)
       return pCORR;
     else
@@ -238,10 +247,23 @@ Float_t  calibrator::GetPcorrectedEB(const Int_t &i)
   if(!positron_momentum_correction_)
     cerr<<"[ERROR]: positron momentum correction not loaded"<<endl;
 #endif
-  if(chargeEle_[i]==-1)
-    return pAtVtxGsfEle_[i]/electron_momentum_correction_->Eval(phiEle_[i]);
-  if(chargeEle_[i]==+1)
-    return pAtVtxGsfEle_[i]/positron_momentum_correction_->Eval(phiEle_[i]);
+
+
+  if(chargeEle_[i]==-1){
+    double pCorr = pAtVtxGsfEle_[i];
+    if(useMomentumCorrector_)
+      pCorr = pAtVtxGsfEle_[i]/electron_momentum_correction_->Eval(phiEle_[i]);
+
+    return pCorr;
+  }
+  
+  if(chargeEle_[i]==+1){
+    double pCorr = pAtVtxGsfEle_[i];
+    if(useMomentumCorrector_)
+      pCorr = pAtVtxGsfEle_[i]/positron_momentum_correction_->Eval(phiEle_[i]);
+
+    return pCorr;
+  }
   return -999.;
 }
 

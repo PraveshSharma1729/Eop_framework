@@ -13,13 +13,20 @@ import datetime
 
 def findFiles(ntuple_dir,ntuples_type,tag_list,ignored_ntuples_label_list,selected_filelist=[],extracalibtree_filelist=[]):
     #get ntuples for the calibration
+    #print(f"{ntuple_dir}:{ntuples_type}:{tag_list}:{ignored_ntuples_label_list}:{selected_filelist}:{extracalibtree_filelist}")
+    #print(f"{os.walk(ntuple_dir)}")
     for root, dirs, files in os.walk(ntuple_dir):
+        #print(f"{root} : {dirs} : {files}")
         for file in files:
+            #print(f"{file}")
+            #print(f"{type_match(file,ntuples_type)}")
             if type_match(file,ntuples_type):
+                #print(f"Matched file {file}")
                 if(not any (ignored_ntuples_label in os.path.join(root, file) for ignored_ntuples_label in ignored_ntuples_label_list)):
                     if file.find("extraCalibTree")==-1:
                         selected_filelist.append(os.path.join(root, file))
                         extracalibtree_filename = generate_extracalibtree_filename(file,ntuples_type)
+                        #print(f"SJ!!! {extracalibtree_filename}")
                         extracalibtree_filelist.append(os.path.join(root, extracalibtree_filename))
     return selected_filelist,extracalibtree_filelist
 
@@ -55,7 +62,7 @@ def generate_extracalibtree_filename(filename,ntuples_type):
         return ("extraCalibTree-"+filenamecopy)
 
 def groupFiles(selected_filelist, extracalibtree_filelist, Nfiles_per_group):
-    print "grouping "+str(len(selected_filelist))+" files in groups of "+str(Nfiles_per_group)+" units"
+    print(f"grouping {str(len(selected_filelist))} files in groups of {str(Nfiles_per_group)} units")
     grouped_selected_filelist = []
     grouped_extracalibtree_filelist = []
     
@@ -78,12 +85,12 @@ def groupFiles(selected_filelist, extracalibtree_filelist, Nfiles_per_group):
                 selected_filename_group_str=""
                 extracalibtree_filename_group_str=""
 
-    print str(len(grouped_selected_filelist))+" groups created"
+    print(f"{str(len(grouped_selected_filelist))} groups created")
     return grouped_selected_filelist, grouped_extracalibtree_filelist
 
 def groupFilesByTag(selected_filelist, extracalibtree_filelist, tag_list):
-    print "grouping "+str(len(selected_filelist))+" files in groups sharing the same value among the following "
-    print tag_list
+    print(f"grouping {str(len(selected_filelist))} files in groups sharing the same value among the following ")
+    print(tag_list)
     grouped_selected_filelist = []
     grouped_extracalibtree_filelist = []
     
@@ -102,8 +109,8 @@ def groupFilesByTag(selected_filelist, extracalibtree_filelist, tag_list):
             grouped_selected_filelist.append(selected_filename_group_str)
             grouped_extracalibtree_filelist.append(extracalibtree_filename_group_str)
         else:
-            print "[WARNING]: can't find any file matching "+tag+" tag"
-    print str(len(grouped_selected_filelist))+" groups created"
+            print(f"[WARNING]: can't find any file matching {tag} tag")
+    print(str(len(grouped_selected_filelist))+" groups created")
     return grouped_selected_filelist, grouped_extracalibtree_filelist
 
     
