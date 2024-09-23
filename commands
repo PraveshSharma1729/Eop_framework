@@ -1,0 +1,5 @@
+python3 python/calibration.py -o /tmp/shilpi/CMSSW_14_0_9_patch2/src/Eop_framework/test/ -l ulrereco2018_EB -e /tmp/shilpi/CMSSW_14_0_9_patch2/src/Eop_framework/bin/ -c /tmp/shilpi/CMSSW_14_0_9_patch2/src/Eop_framework/template.cfg -N 1
+
+
+./jobs/ulrereco2018_EB/job_loop_0_file_0_BuildEopEta/job_file_0_even.sh 
+./jobs/ulrereco2018_EB/job_loop_0_file_0_ComputeIC/job_file_0_odd.sh
