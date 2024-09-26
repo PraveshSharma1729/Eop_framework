@@ -130,17 +130,25 @@ void ICmanager::InitIC(Int_t ICvalue)
 
 Float_t ICmanager::GetIC(const Int_t &ix, const Int_t &iy, const Int_t &iz)
 {
-  //#ifdef DEBUG
+
+  ///SJ modified it to put the 3 lines under DEBUG and the next 3 added to avoid crystals with ix > 86 else it breaks - 27.9.2024. Need to check with the ECALELF experts. ix > 86 shouldnt happen for EB electrons. But for eta~1.22, it shows ix==86 and hence it breaks.
+#ifdef DEBUG
   assert(iz>=izmin_     && iz<=izmax_); 
   assert(ix>=ixmin_.at(iz) && ix<=ixmax_.at(iz));
   assert(iy>=iymin_.at(iz) && iy<=iymax_.at(iz));
-  //#endif
+#endif
+
+  if(iz>=izmin_     && iz<=izmax_) return 0;
+  if(ix>=ixmin_.at(iz) && ix<=ixmax_.at(iz)) return 0;
+  if(iy>=iymin_.at(iz) && iy<=iymax_.at(iz)) return 0;
+ 
   return timedependent_ICvalues_.at(0)[ix][iy][iz];
 }
 
 Float_t ICmanager::GetIC(const Int_t &ix, const Int_t &iy, const Int_t &iz, const Int_t &iIOV)
 {
   //#ifdef DEBUG
+  //std::cout<<"SJ!!! inside GetIC2, ix:iy:iz:"<<ix<<" "<<iy<<" "<<iz<<std::endl;
   assert(iz>=izmin_     && iz<=izmax_); 
   assert(ix>=ixmin_.at(iz) && ix<=ixmax_.at(iz));
   assert(iy>=iymin_.at(iz) && iy<=iymax_.at(iz));
