@@ -131,24 +131,16 @@ void ICmanager::InitIC(Int_t ICvalue)
 Float_t ICmanager::GetIC(const Int_t &ix, const Int_t &iy, const Int_t &iz)
 {
 
-  ///SJ modified it to put the 3 lines under DEBUG and the next 3 added to avoid crystals with ix > 86 else it breaks - 27.9.2024. Need to check with the ECALELF experts. ix > 86 shouldnt happen for EB electrons. But for eta~1.22, it shows ix==86 and hence it breaks.
-#ifdef DEBUG
+  //#ifdef DEBUG
   assert(iz>=izmin_     && iz<=izmax_); 
   assert(ix>=ixmin_.at(iz) && ix<=ixmax_.at(iz));
   assert(iy>=iymin_.at(iz) && iy<=iymax_.at(iz));
-#endif
-
-  if(iz>=izmin_     && iz<=izmax_) return 0;
-  if(ix>=ixmin_.at(iz) && ix<=ixmax_.at(iz)) return 0;
-  if(iy>=iymin_.at(iz) && iy<=iymax_.at(iz)) return 0;
- 
   return timedependent_ICvalues_.at(0)[ix][iy][iz];
 }
 
 Float_t ICmanager::GetIC(const Int_t &ix, const Int_t &iy, const Int_t &iz, const Int_t &iIOV)
 {
   //#ifdef DEBUG
-  //std::cout<<"SJ!!! inside GetIC2, ix:iy:iz:"<<ix<<" "<<iy<<" "<<iz<<std::endl;
   assert(iz>=izmin_     && iz<=izmax_); 
   assert(ix>=ixmin_.at(iz) && ix<=ixmax_.at(iz));
   assert(iy>=iymin_.at(iz) && iy<=iymax_.at(iz));
@@ -200,15 +192,16 @@ TH2D* ICmanager::GetHisto(const int &iz, const char* name, const char* title)
 
   ICmap->SetDirectory(0);
 
+
   for(int xbin=1; xbin<ICmap->GetNbinsX()+1; ++xbin)
     for(int ybin=1; ybin<ICmap->GetNbinsY()+1; ++ybin)
     {
       int ix,iy;
       if(iz==0)
-      {
+	{
 	ix=ICmap->GetYaxis()->GetBinCenter(ybin);
 	iy=ICmap->GetXaxis()->GetBinCenter(xbin);
-      }
+	}
       else
       {
 	ix=ICmap->GetXaxis()->GetBinCenter(xbin);
@@ -227,6 +220,7 @@ double&  ICmanager::operator()(const Int_t &ix, const Int_t &iy, const Int_t &iz
 TH2D* ICmanager::GetPulledIC(TH2D* h2_ICpull, const int &iz)
 {
   bool toshift = (h2_ICpull->GetXaxis()->GetXmin()==1);
+
   TH2D* pulledIC = new TH2D
     ("pulledIC","pulledIC",
      h2_ICpull->GetNbinsX(),h2_ICpull->GetXaxis()->GetXmin(),h2_ICpull->GetXaxis()->GetXmax(),
@@ -239,8 +233,13 @@ TH2D* ICmanager::GetPulledIC(TH2D* h2_ICpull, const int &iz)
       int ix,iy;
       if(iz==0)
       {
-	ix=h2_ICpull->GetYaxis()->GetBinCenter(xbin) - 0.5*toshift;
-	iy=h2_ICpull->GetXaxis()->GetBinCenter(ybin) - 0.5*toshift;
+	///Original - gave segfaults
+	//ix=h2_ICpull->GetYaxis()->GetBinCenter(xbin) - 0.5*toshift;
+	//iy=h2_ICpull->GetXaxis()->GetBinCenter(ybin) - 0.5*toshift;
+	
+	////SJ corrected it since with yaxis (which is actually ix) should get ybin - 27th Sept, 2024
+	ix=h2_ICpull->GetYaxis()->GetBinCenter(ybin) - 0.5*toshift;
+	iy=h2_ICpull->GetXaxis()->GetBinCenter(xbin) - 0.5*toshift;
       }
       else
       {
