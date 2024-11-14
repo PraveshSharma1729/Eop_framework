@@ -28,8 +28,11 @@ current_dir = os.getcwd();
 ignored_ntuples_label_list = ["merged", "jsonFilter", "Run2022A", "Run2022C", "Run2022D", "Run2022E", "Run2022F", "Run2022G"]
 
 #ntuple_dir = "/eos/cms/store/group/dpg_ecal/alca_ecalcalib/ecalelf/ntuples/wangchu/2023IC/13.6TeV/124X_dataRun3_v15_newTiming_pulse_IC/Run2022G-EcalUncalZElectron-PromptReco-v1/allRange/"
-ntuple_dir = "/eos/cms/store/group/dpg_ecal/alca_ecalcalib/ecalelf/ntuples/wangchu/2023IC/13.6TeV/124X_dataRun3_v15_newTiming_pulse_IC/"
-tag_list = ["Run2022B"]
+#ntuple_dir = "/eos/cms/store/group/dpg_ecal/alca_ecalcalib/ecalelf/ntuples/wangchu/2023IC/13.6TeV/124X_dataRun3_v15_newTiming_pulse_IC/"
+#tag_list = ["Run2022B"]
+
+ntuple_dir = "/eos/cms/store/group/dpg_ecal/alca_ecalcalib/automation_repro/rereco2024CDE_v1/"
+tag_list = ["Run2024C","Run2024D","Run2024E"]
 
 
 #parse arguments
@@ -75,12 +78,14 @@ if (len(selected_filelist)>0):
     print("Run calibration on "+str(len(selected_filelist))+" files:")
     if(options.verbosity>=1):
         print("-----------------------")
+        print("inputCalibTree:    :")
         for filename in selected_filelist:
-            print(filename )
+            print(filename + " \ ")
         print("-----------------------")
         print("auto-generated extraCalibTree filelist")
+        print("extraCalibTree:    :")
         for filename in extracalibtree_filelist:
-            print(filename) 
+            print(filename + " \ ") 
         print("-----------------------")
 
 else:
@@ -128,6 +133,15 @@ for iLoop in range(options.RestartFromLoop,options.Nloop):
                 contents = fi.read()
                 replaced_contents = contents.replace("SELECTED_INPUTFILE", selected_filename).replace("EXTRACALIBTREE_INPUTFILE", extracalibtree_filename)
             cfgfilename=jobdir+"/config.cfg"
+            
+
+
+
+           # print(f"Selected input file: {selected_filename}")
+           # print(f"ExtraCalibTree input file: {extracalibtree_filename}")
+
+
+
             with open(cfgfilename, "w") as fo:
                 fo.write(replaced_contents)
 
@@ -169,7 +183,8 @@ for iLoop in range(options.RestartFromLoop,options.Nloop):
                 outScript = open(outScriptName,"w")
                 outScript.write("#!/bin/bash\n")
                 #outScript.write('source setup.sh\n')
-                outScript.write("cd /tmp/shilpi/CMSSW_14_0_9_patch2/\n")
+                outScript.write("cd /afs/cern.ch/user/p/pravesh/public/EOP/CMSSW_14_0_5_patch1/\n")
+                #outScript.write("cd /tmp/shilpi/CMSSW_14_0_9_patch2/\n")
                 outScript.write('eval `scram runtime -sh`\n');
                 outScript.write("cd -\n");
                 outScript.write("echo $PWD\n");
@@ -207,7 +222,8 @@ for iLoop in range(options.RestartFromLoop,options.Nloop):
             mergescriptName=job_parent_folder+"/merge_"+task+"_loop_"+str(iLoop)+".sh"
             mergescript = open( mergescriptName,"w")
             mergescript.write("#!/bin/bash\n")
-            mergescript.write("cd /tmp/shilpi/CMSSW_14_0_9_patch2/\n")
+            mergescript.write("cd /afs/cern.ch/user/p/pravesh/public/EOP/CMSSW_14_0_5_patch1/\n")
+            #mergescript.write("cd /tmp/shilpi/CMSSW_14_0_9_patch2/\n")
             mergescript.write('eval `scram runtime -sh`\n');
             mergescript.write("cd -\n");
             mergescript.write("hadd -f -k "+str(options.outdir)+"/EopEta_loop_"+str(iLoop)+".root "+str(options.outdir)+"/EopEta_loop_"+str(iLoop)+"_file_*_*.root\n")
@@ -218,7 +234,8 @@ for iLoop in range(options.RestartFromLoop,options.Nloop):
             mergescriptName=job_parent_folder+"/merge_"+task+"_loop_"+str(iLoop)+".sh"
             mergescript = open( mergescriptName,"w")
             mergescript.write("#!/bin/bash\n")
-            mergescript.write("cd /tmp/shilpi/CMSSW_14_0_9_patch2/\n")
+            mergescript.write("cd /afs/cern.ch/user/p/pravesh/public/EOP/CMSSW_14_0_5_patch1/\n")
+           # mergescript.write("cd /tmp/shilpi/CMSSW_14_0_9_patch2/\n")
             mergescript.write('eval `scram runtime -sh`\n');
             mergescript.write("cd -\n");
             mergescript.write("hadd -f -k "+str(options.outdir)+"/IC_loop_"+str(iLoop)+".root "+str(options.outdir)+"/IC_loop_"+str(iLoop)+"_file_*_*.root\n")

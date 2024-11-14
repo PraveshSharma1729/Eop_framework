@@ -175,6 +175,10 @@ int main(int argc, char* argv[])
 	  IC=calorimeter->GetIC(ix,iy,iz);
 	  numerator(ix,iy,iz)   += ERecHit->at(iRecHit) * fracRecHit->at(iRecHit) * regression * IC / E * p / E * weight;
 	  denominator(ix,iy,iz) += ERecHit->at(iRecHit) * fracRecHit->at(iRecHit) * regression * IC / E         * weight;
+	 // cout<<"check	"<<endl;
+//	  cout<<"ietaSeed     "<<ietaSeed<<"	 numerator      "<< numerator(ix,iy,iz)<<"ix "<<ix<<"iy "<<iy<<"iz "<<iz<<endl;
+//	  cout<<"      denominator     "<<denominator(ix,iy,iz)<<endl;
+	  
 	}
       }
     }
@@ -205,6 +209,11 @@ int main(int argc, char* argv[])
   
   TH2D* h2_temporaryICEEp = calorimeter->GetPulledIC(h2_ICpullEEp, +1);
 
+  ///SJ - changed on 6th Nov, 2024
+  h2_ICpullEB->SetName("ICpullEB");
+  h2_ICpullEEm->SetName("ICpullEEm");
+  h2_ICpullEEp->SetName("ICpullEEp");
+  
   h2_temporaryICEB->SetName("temporaryICEB");
   h2_temporaryICEB->SetTitle("temporaryICEB");
   h2_temporaryICEEm->SetName("temporaryICEEm");
@@ -212,7 +221,9 @@ int main(int argc, char* argv[])
   h2_temporaryICEEp->SetName("temporaryICEEp");
   h2_temporaryICEEp->SetTitle("temporaryICEEp");
 
-  
+  h2_temporaryICEB->Draw("COLZ");
+  h2_temporaryICEEm->Draw("COLZ");
+  h2_temporaryICEEp->Draw("COLZ"); 
   //save and close
   //if something goes wrong with I/O (usually eos problems) returns failure 
   if(!outFile->cd())
@@ -231,3 +242,5 @@ int main(int argc, char* argv[])
   delete calorimeter;
   return 0;
 }
+
+
