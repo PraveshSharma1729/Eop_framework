@@ -12,6 +12,8 @@ ICmanager::ICmanager(CfgManager conf)
   //load input IC
   if(conf.OptExist("Input.inputIC"))
     LoadIC( conf.GetOpt<std::vector<std::string> > ("Input.inputIC") );
+   // cout<<"input check  "<<endl;
+
   else
     cout<<"[WARNING]: no inputIC found in Input in cfg"<<endl;
   
@@ -34,6 +36,7 @@ ICmanager::~ICmanager()
 void ICmanager::LoadIC(TH2D* ICmap, const int &iz)
 {
   timedependent_ICvalues_.clear();
+  
   timedependent_ICvalues_.push_back( GetICFromTH2D(ICmap,iz) );
 }
 
@@ -42,6 +45,7 @@ void ICmanager::LoadIC(const std::vector<std::string> &ICcfg)
   timedependent_ICvalues_.clear();
 
   string inputtype   = ICcfg.front();
+//  cout<<"input check  "<<inputtype<<endl;
   string filename    = ICcfg.back();
   if(inputtype=="txtIC")
   {
@@ -102,14 +106,19 @@ IC ICmanager::GetICFromTH2D(TH2D* ICmap, const int &iz)
 {
   IC icvalues;
   bool toshift = (ICmap->GetXaxis()->GetXmin() == 1);
-  for(int xbin=1; xbin<ICmap->GetXaxis()->GetXmax()+1; ++xbin)
+  //for(int xbin=1; xbin<ICmap->GetXaxis()->GetXmax()+1; ++xbin)
+  for(int xbin=1; xbin<ICmap->GetXaxis()->GetNbins()+1; ++xbin)
   {
     int ix = (int) (ICmap->GetXaxis()->GetBinCenter(xbin) - 0.5*toshift);
-    for(int ybin=1; ybin<ICmap->GetYaxis()->GetXmax()+1; ++ybin)
+    //for(int ybin=1; ybin<ICmap->GetYaxis()->GetXmax()+1; ++ybin)
+    for(int ybin=1; ybin<ICmap->GetYaxis()->GetNbins()+1; ++ybin)
     {
       int iy = (int) (ICmap->GetYaxis()->GetBinCenter(ybin) - 0.5*toshift);
-      if(iz==0)//for barrel, for historical reason, in the th2f ix(ieta) and iy(iphi) are inverted 
+      if(iz==0)//for barrel, for historical reason, in the th2f ix(ieta) and iy(iphi) are inverted
+	{
 	icvalues[iy][ix][iz] = ICmap->GetBinContent(xbin,ybin);
+	//std::cout<<"PS! Inside GetICFromTH2D, icvalues for iy : ix : iz : "<<iy<<" "<<ix<<" "<<iz<< "are "<<icvalues[iy][ix][iz]<<std::endl;
+	}
       else
 	icvalues[ix][iy][iz] = ICmap->GetBinContent(xbin,ybin);
     }
@@ -130,11 +139,11 @@ void ICmanager::InitIC(Int_t ICvalue)
 
 Float_t ICmanager::GetIC(const Int_t &ix, const Int_t &iy, const Int_t &iz)
 {
+
   //#ifdef DEBUG
   assert(iz>=izmin_     && iz<=izmax_); 
   assert(ix>=ixmin_.at(iz) && ix<=ixmax_.at(iz));
   assert(iy>=iymin_.at(iz) && iy<=iymax_.at(iz));
-  //#endif
   return timedependent_ICvalues_.at(0)[ix][iy][iz];
 }
 
@@ -146,6 +155,7 @@ Float_t ICmanager::GetIC(const Int_t &ix, const Int_t &iy, const Int_t &iz, cons
   assert(iy>=iymin_.at(iz) && iy<=iymax_.at(iz));
   assert(iIOV<timedependent_ICvalues_.size());
   //#endif
+  //Float_t IC = timedependent_ICvalues_.at(iIOV)[ix][iy][iz];
   return timedependent_ICvalues_.at(iIOV)[ix][iy][iz];
 }
 
@@ -192,15 +202,16 @@ TH2D* ICmanager::GetHisto(const int &iz, const char* name, const char* title)
 
   ICmap->SetDirectory(0);
 
+
   for(int xbin=1; xbin<ICmap->GetNbinsX()+1; ++xbin)
     for(int ybin=1; ybin<ICmap->GetNbinsY()+1; ++ybin)
     {
       int ix,iy;
       if(iz==0)
-      {
+	{
 	ix=ICmap->GetYaxis()->GetBinCenter(ybin);
 	iy=ICmap->GetXaxis()->GetBinCenter(xbin);
-      }
+	}
       else
       {
 	ix=ICmap->GetXaxis()->GetBinCenter(xbin);
@@ -219,20 +230,27 @@ double&  ICmanager::operator()(const Int_t &ix, const Int_t &iy, const Int_t &iz
 TH2D* ICmanager::GetPulledIC(TH2D* h2_ICpull, const int &iz)
 {
   bool toshift = (h2_ICpull->GetXaxis()->GetXmin()==1);
+
   TH2D* pulledIC = new TH2D
     ("pulledIC","pulledIC",
      h2_ICpull->GetNbinsX(),h2_ICpull->GetXaxis()->GetXmin(),h2_ICpull->GetXaxis()->GetXmax(),
      h2_ICpull->GetNbinsY(),h2_ICpull->GetYaxis()->GetXmin(),h2_ICpull->GetYaxis()->GetXmax());
   pulledIC->SetDirectory(0);
 
+  
   for(int xbin=1; xbin<h2_ICpull->GetNbinsX()+1; ++xbin)
     for(int ybin=1; ybin<h2_ICpull->GetNbinsY()+1; ++ybin)
     {
       int ix,iy;
       if(iz==0)
       {
-	ix=h2_ICpull->GetYaxis()->GetBinCenter(xbin) - 0.5*toshift;
-	iy=h2_ICpull->GetXaxis()->GetBinCenter(ybin) - 0.5*toshift;
+	///Original - gave segfaults
+	//ix=h2_ICpull->GetYaxis()->GetBinCenter(xbin) - 0.5*toshift;
+	//iy=h2_ICpull->GetXaxis()->GetBinCenter(ybin) - 0.5*toshift;
+	
+	////SJ corrected it since with yaxis (which is actually ix) should get ybin - 27th Sept, 2024
+	ix=h2_ICpull->GetYaxis()->GetBinCenter(ybin) - 0.5*toshift;
+	iy=h2_ICpull->GetXaxis()->GetBinCenter(xbin) - 0.5*toshift;
       }
       else
       {
@@ -577,6 +595,7 @@ TH2D* GetICpull(TH2D* h2_numerator,TH2D* h2_denominator)
      h2_numerator->GetNbinsY(),h2_numerator->GetYaxis()->GetXmin(),h2_numerator->GetYaxis()->GetXmax());
   ICpull->SetDirectory(0);
 
+    
   for(int xbin=1; xbin<h2_numerator->GetNbinsX()+1; ++xbin)
     for(int ybin=1; ybin<h2_numerator->GetNbinsY()+1; ++ybin)
     {

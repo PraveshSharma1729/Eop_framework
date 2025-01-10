@@ -57,12 +57,15 @@ int main(int argc, char* argv[])
     {
       ICcfg.push_back(argv[iarg+1]);
       ICcfg.push_back(argv[iarg+2]);
+    //  cout<<"inIC"<<"	arg 1	"<<argv[iarg+1]<<"arg2	"<<argv[iarg+2]<<"	arg0	"<<argv[iarg]<<endl;
+      
     }
 
     if(string(argv[iarg])=="--Eopweightrange")
     {
       Eopweightmin=atof(argv[iarg+1]);
       Eopweightmax=atof(argv[iarg+2]);
+     // cout<<"Eop check"<<"   arg 1   "<<argv[iarg+1]<<"arg2  "<<argv[iarg+2]<<"     arg0    "<<argv[iarg]<<endl;
     }
     if(string(argv[iarg])=="--Eopweightbins")
       Eopweightbins=atoi(argv[iarg+1]);
@@ -162,19 +165,23 @@ int main(int argc, char* argv[])
   
   for(Long64_t ientry=ientry0 ; ientry<Nentries ; ientry+=ientry_increment)
   {
+    ///SJ
     if( ientry%100000==0 || (ientry-1)%100000==0)
       std::cout << "Processing entry "<< ientry << "\r" << std::flush;
+    
     calorimeter->GetEntry(ientry);
     for(int iEle=0;iEle<2;++iEle)
     {
       if(calorimeter->isSelected(iEle))
       {
 	E=calorimeter->GetICEnergy(iEle);
-	p=calorimeter->GetPcorrected(iEle);
+	p=calorimeter->GetPcorrected(iEle);	
 	if(!EE)
 	  ietaSeed=calorimeter->GetietaSeed(iEle);
 	else
 	  ietaSeed=calorimeter->GetEERingSeed(iEle);
+//	if(ietaSeed>0){
+//	cout<<"ieta	"<<ietaSeed<<"  Energy	"<<E<<endl;//}
 	if(p!=0)
 	{
 	  /*
@@ -188,7 +195,9 @@ int main(int argc, char* argv[])
 		     <<std::endl; 
 	    getchar();
 	  */
+	//	if (ietaSeed>0){
 	  Eop_vs_ieta->Fill(ietaSeed,E/p);
+	//	cout<<"ieta	"<<ietaSeed<<"E 	"<<E/p<<"	E/p	"<<E<<" 	p	"<<p<<endl;}
 	}
 	//else
 	//  cout<<"[WARNING]: p=0 for entry "<<ientry<<endl;

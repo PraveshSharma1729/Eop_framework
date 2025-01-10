@@ -42,7 +42,8 @@ class calibrator: public ICmanager, public ECALELFInterface
   TGraphErrors* electron_momentum_correction_;
   TGraphErrors* positron_momentum_correction_;
   TH2F* weight_;
-
+  bool useMomentumCorrector_;
+  
  private:
   Float_t  GetPcorrectedEB(const Int_t &i);
   Float_t  GetPcorrectedEE(const Int_t &i);

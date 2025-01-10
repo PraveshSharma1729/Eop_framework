@@ -14,11 +14,14 @@ calibrator::calibrator(CfgManager conf):
 
   //-------------------------------------
   //load momentum correction if present in cfg
-  if(conf.OptExist("Input.MomentumCorrection"))
+  if(conf.OptExist("Input.MomentumCorrection")){
+    useMomentumCorrector_ = true;
     LoadMomentumCorrection(conf.GetOpt<std::string> ("Input.MomentumCorrection"));
-  else
+  }
+  else{
+    useMomentumCorrector_ = false;
     cout<<"[WARNING]: no Input.MomentumCorrection found in cfg file"<<endl;
-
+  }
   //-------------------------------------
   //load E/p event weight if present in cfg
   if(conf.OptExist("Input.Eopweight"))
@@ -174,7 +177,10 @@ Float_t calibrator::GetPcorrectedEE(const Int_t &i)
 #endif
   if(chargeEle_[i]==-1)
   {
-    float pCORR = pAtVtxGsfEle_[i]/electron_momentum_correction_->Eval(phiEle_[i]) - EScorrection_*esEnergySCEle_[i];
+    float pCORR = pAtVtxGsfEle_[i];
+     if(useMomentumCorrector_)
+       pCORR = pAtVtxGsfEle_[i]/electron_momentum_correction_->Eval(phiEle_[i]) - EScorrection_*esEnergySCEle_[i];
+     
     if(pCORR>0)
       return pCORR;
     else
@@ -182,7 +188,10 @@ Float_t calibrator::GetPcorrectedEE(const Int_t &i)
   }
   if(chargeEle_[i]==+1)
   {
-    float pCORR= pAtVtxGsfEle_[i]/positron_momentum_correction_->Eval(phiEle_[i]) - EScorrection_*esEnergySCEle_[i];
+    float pCORR= pAtVtxGsfEle_[i];
+    if(useMomentumCorrector_)
+      pCORR= pAtVtxGsfEle_[i]/positron_momentum_correction_->Eval(phiEle_[i]) - EScorrection_*esEnergySCEle_[i];
+    
     if(pCORR>0)
       return pCORR;
     else
@@ -199,7 +208,6 @@ Float_t calibrator::GetICEnergyEE(const Int_t &i)
   float E=0;
   float IC = 1.;
   int ix,iy,iz,iIOV;
-
   for(unsigned int iRecHit = 0; iRecHit < ERecHit_[i]->size(); iRecHit++) 
   {
     if(recoFlagRecHit_[i]->at(iRecHit) >= 4)
@@ -217,6 +225,7 @@ Float_t calibrator::GetICEnergyEE(const Int_t &i)
     }
     IC = GetIC(ix,iy,iz,iIOV);
     E += kRegression * ERecHit_[i]->at(iRecHit) * fracRecHit_[i]->at(iRecHit) * IC;
+   // cout<<"energy	"<<E<<endl;
     //cout<<"GetICEnergy\tiRECHIT="<<iRecHit<<"\tix="<<XRecHit_[i]->at(iRecHit)<<"\tiy="<<YRecHit_[i]->at(iRecHit)<<"\tiz="<<ZRecHit_[i]->at(iRecHit)<<"\tIC="<<IC<<endl;
   }
       
@@ -238,10 +247,23 @@ Float_t  calibrator::GetPcorrectedEB(const Int_t &i)
   if(!positron_momentum_correction_)
     cerr<<"[ERROR]: positron momentum correction not loaded"<<endl;
 #endif
-  if(chargeEle_[i]==-1)
-    return pAtVtxGsfEle_[i]/electron_momentum_correction_->Eval(phiEle_[i]);
-  if(chargeEle_[i]==+1)
-    return pAtVtxGsfEle_[i]/positron_momentum_correction_->Eval(phiEle_[i]);
+
+
+  if(chargeEle_[i]==-1){
+    double pCorr = pAtVtxGsfEle_[i];
+    if(useMomentumCorrector_)
+      pCorr = pAtVtxGsfEle_[i]/electron_momentum_correction_->Eval(phiEle_[i]);
+
+    return pCorr;
+  }
+  
+  if(chargeEle_[i]==+1){
+    double pCorr = pAtVtxGsfEle_[i];
+    if(useMomentumCorrector_)
+      pCorr = pAtVtxGsfEle_[i]/positron_momentum_correction_->Eval(phiEle_[i]);
+
+    return pCorr;
+  }
   return -999.;
 }
 
@@ -272,10 +294,12 @@ Float_t calibrator::GetICEnergyEB(const Int_t &i)
       iIOV = FindCloserIOVNumber( GetRunNumber() , GetLS() );
     }
     IC = GetIC(ix,iy,iz,iIOV);
+   // IC=1.;
     //printf("(ix,iy,iz,iIOV)=(%i,%i,%i,%i)\t (run,lumi)=(%u,%u)\t IC=%f\n",ix,iy,iz,iIOV,GetRunNumber(),GetLS(),IC);
+  // std::cout<<" ix "<<ix<<" iy	"<<iy<<" iz  "<<iz<<"  IC val in calibrator.cc "<<IC<<std::endl;
     E += kRegression * ERecHit_[i]->at(iRecHit) * fracRecHit_[i]->at(iRecHit) * IC;
   }
-      
+  //std:: cout<< "Ene	"<<E<<std::endl;   
   return E;
 }
 

@@ -60,21 +60,23 @@ int main(int argc, char* argv[])
   }
 
   //Load new (incomplete) ICs
+
+  ///SJ added EB as teh suffix below which was not there before since that is how the input rootfile stores the historgrams - 5th Nov, 2024
   cout<<">> Reading new numerator and denominator from "<<newFileName.Data()<<endl;
   TFile newFile(newFileName.Data(),"UPDATE");
-  TH2D* numerator = (TH2D*)newFile.Get("numerator");
-  TH2D* denominator = (TH2D*)newFile.Get("denominator");
-  TH2D* ICpull = (TH2D*)newFile.Get("ICpull");
-  TH2D* temporaryIC = (TH2D*)newFile.Get("temporaryIC");
-
+  TH2D* numerator = (TH2D*)newFile.Get("numeratorEB");
+  TH2D* denominator = (TH2D*)newFile.Get("denominatorEB");
+  TH2D* ICpull = (TH2D*)newFile.Get("ICpullEB");
+  TH2D* temporaryIC = (TH2D*)newFile.Get("temporaryICEB");
   //Reset objects that are in general wrongly filled by hadd
   ICpull->Reset();
-  temporaryIC->Reset();
+  //temporaryIC->Reset();
+  
   //Create and fill ICpull and newIC
   TH2D* newIC = (TH2D*)temporaryIC->Clone();
+
   newIC->SetName(newObjName.Data());
   newIC->SetTitle(newObjName.Data());
-
   ICpull->Divide(numerator,denominator,1.,1.);//ICpull[i]=numerator[i]/denominator[i]
 
   if(oldFileName!="")
@@ -83,12 +85,14 @@ int main(int argc, char* argv[])
   {
     newIC=(TH2D*)ICpull->Clone();
     newIC->SetName(newObjName.Data());
+    //newIC->SetName(Form("%s_EB",newObjName.Data()));
     newIC->SetTitle(newObjName.Data());
   }
 
   //Overwrite the newIC file
   cout<<">> Writing new ICs to "<<newFileName.Data()<<"/"<<newIC->GetName()<<endl;
   newFile.cd();
+
   ICpull->Write(ICpull->GetName(),TObject::kOverwrite);
   temporaryIC->Write(temporaryIC->GetName(),TObject::kOverwrite);
   newIC->Write(newIC->GetName());

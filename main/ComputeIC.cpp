@@ -153,7 +153,7 @@ int main(int argc, char* argv[])
 	p=               calorimeter->GetPcorrected(iEle);
 	if(p==0)
 	  continue;
-        //eta=             calorimeter->GetEtaSC(iEle);
+        eta=             calorimeter->GetEtaSC(iEle);
 	if(!EE)
 	  ietaSeed=calorimeter->GetietaSeed(iEle);
 	else
@@ -171,30 +171,49 @@ int main(int argc, char* argv[])
 	  ix=XRecHit->at(iRecHit);
 	  iy=YRecHit->at(iRecHit);
 	  iz=ZRecHit->at(iRecHit);
+	  float enRH = ERecHit->at(iRecHit);
 	  IC=calorimeter->GetIC(ix,iy,iz);
 	  numerator(ix,iy,iz)   += ERecHit->at(iRecHit) * fracRecHit->at(iRecHit) * regression * IC / E * p / E * weight;
 	  denominator(ix,iy,iz) += ERecHit->at(iRecHit) * fracRecHit->at(iRecHit) * regression * IC / E         * weight;
+	 // cout<<"check	"<<endl;
+//	  cout<<"ietaSeed     "<<ietaSeed<<"	 numerator      "<< numerator(ix,iy,iz)<<"ix "<<ix<<"iy "<<iy<<"iz "<<iz<<endl;
+//	  cout<<"      denominator     "<<denominator(ix,iy,iz)<<endl;
+	  
 	}
       }
     }
-  }	  
-
+  }
+  
   //get numerator and denominator histos
   TH2D* h2_numeratorEB = numerator.GetHisto(       0, "numeratorEB",    "numeratorEB");
   TH2D* h2_denominatorEB = denominator.GetHisto(   0, "denominatorEB",  "denominatorEB");
+  
   TH2D* h2_numeratorEEm = numerator.GetHisto(     -1, "numeratorEEm",   "numeratorEEm");
+  
   TH2D* h2_denominatorEEm = denominator.GetHisto( -1, "denominatorEEm", "denominatorEEm");
+  
   TH2D* h2_numeratorEEp = numerator.GetHisto(     +1, "numeratorEEp",   "numeratorEEp");
+  
   TH2D* h2_denominatorEEp = denominator.GetHisto( +1, "denominatorEEp", "denominatorEEp");
-
+ 
   //compute temporary IC-pull and IC-values 
   TH2D* h2_ICpullEB = GetICpull(h2_numeratorEB,h2_denominatorEB);
+  
   TH2D* h2_temporaryICEB = calorimeter->GetPulledIC(h2_ICpullEB, 0);
+  
   TH2D* h2_ICpullEEm = GetICpull(h2_numeratorEEm,h2_denominatorEEm);
+  
   TH2D* h2_temporaryICEEm = calorimeter->GetPulledIC(h2_ICpullEEm, -1);
+  
   TH2D* h2_ICpullEEp = GetICpull(h2_numeratorEEp,h2_denominatorEEp);
+  
   TH2D* h2_temporaryICEEp = calorimeter->GetPulledIC(h2_ICpullEEp, +1);
 
+  ///SJ - changed on 6th Nov, 2024
+  h2_ICpullEB->SetName("ICpullEB");
+  h2_ICpullEEm->SetName("ICpullEEm");
+  h2_ICpullEEp->SetName("ICpullEEp");
+  
   h2_temporaryICEB->SetName("temporaryICEB");
   h2_temporaryICEB->SetTitle("temporaryICEB");
   h2_temporaryICEEm->SetName("temporaryICEEm");
@@ -202,6 +221,9 @@ int main(int argc, char* argv[])
   h2_temporaryICEEp->SetName("temporaryICEEp");
   h2_temporaryICEEp->SetTitle("temporaryICEEp");
 
+  h2_temporaryICEB->Draw("COLZ");
+  h2_temporaryICEEm->Draw("COLZ");
+  h2_temporaryICEEp->Draw("COLZ"); 
   //save and close
   //if something goes wrong with I/O (usually eos problems) returns failure 
   if(!outFile->cd())
@@ -220,3 +242,5 @@ int main(int argc, char* argv[])
   delete calorimeter;
   return 0;
 }
+
+
