@@ -593,7 +593,7 @@ ICPhiFoldAvg<<endl;
       }
 
     avgIC_vs_iEta_crackCorr = NormalizeIC_EB(h2_IC_crackCorr[0], h2_IC_crackCorr_phiNorm[0], TT_centre[0], false, 0.92,1.08);
-    h2_IC_crackCorr[0]->Write("COLZ");
+0    h2_IC_crackCorr[0]->Write("COLZ");
     outFile -> mkdir("crackCorr");
     outFile -> cd("crackCorr");
     avgIC_vs_iEta_crackCorr->Write("avgIC_vs_iEta_crackCorr");

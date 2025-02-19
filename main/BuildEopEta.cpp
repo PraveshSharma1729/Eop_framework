@@ -197,7 +197,7 @@ int main(int argc, char* argv[])
 	  */
 	//	if (ietaSeed>0){
 	  Eop_vs_ieta->Fill(ietaSeed,E/p);
-	//	cout<<"ieta	"<<ietaSeed<<"E 	"<<E/p<<"	E/p	"<<E<<" 	p	"<<p<<endl;}
+	cout<<"ieta	"<<ietaSeed<<"E 	"<<E/p<<"	E/p	"<<E<<" 	p	"<<p<<endl;
 	}
 	//else
 	//  cout<<"[WARNING]: p=0 for entry "<<ientry<<endl;

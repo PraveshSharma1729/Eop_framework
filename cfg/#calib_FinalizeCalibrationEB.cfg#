@@ -11,8 +11,7 @@
 #  EEringsFile /afs/cern.ch/user/f/fmonti/work/Eop_framework/data/eerings.dat
 </Input>
 
-<Output>
-  Folder /afs/cern.ch/user/p/pravesh/private/EoP/CMSSW_14_0_13_patch2/src/Eop_framework/plots/
+<Output>	  Folder /afs/cern.ch/user/p/pravesh/private/EoP/CMSSW_14_0_13_patch2/src/Eop_framework/plot/
 #  Folder /eos/user/f/fmonti/www/EOverpCalibration/ULRereco2016_103X_dataRun2_v6_ULBaseForICs_newRegV1_EB_withZeemomcorrANDPTCUT/
   txtLabel ULRereco2016_103X_dataRun2_v6_ULBaseForICs_newRegV1_EB
   rootFileName finalICEB.root

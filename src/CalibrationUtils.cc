@@ -622,15 +622,17 @@ void BookSpreadHistos_EB(TH1F* h_spread, std::vector<TH1F*>& h_spread_vsEta, TGr
 				float IC = hcmap->GetBinContent(ibin, jbin);
 				if( IC > 0. && IC < 2. ) {
 					h_spread -> Fill(IC);
+					//		std::cout<<"  IC = "<<IC<<std::endl;
 					h_spread_vsEta.at(etaRing) -> Fill(IC);
 				}
 			} else {
 				float IC1 = hcmap  -> GetBinContent(ibin, jbin);
 				float IC2 = hcmap2 -> GetBinContent(ibin, jbin);
+				//	std::cout<<"  check 0 "<<"IC1  "<<IC1<<" IC2  "<<IC2<<std::endl;
 				if( IC1 > 0. && IC1 < 2. && IC2 > 0. && IC2 < 2. ) {
 					h_spread -> Fill((IC1 - IC2) / (IC1 + IC2));
 					h_spread_vsEta.at(etaRing) -> Fill((IC1 - IC2) / (IC1 + IC2));
-					//  std::cout<<"eta: "<<etaRing<<" values: "<<IC1<<" "<<IC2<<" "<<(IC1-IC2)/(IC1+IC2)<<std::endl;
+					// std::cout<<"eta: "<<etaRing<<" values: "<<IC1<<" "<<IC2<<" "<<(IC1-IC2)/(IC1+IC2)<<std::endl;
 				}
 			}
 		}
@@ -675,8 +677,9 @@ void BookSpreadHistos_EB(TH1F* h_spread, std::vector<TH1F*>& h_spread_vsEta, TGr
 
 		g_spread_vsEta -> SetPoint(etaRing, etaMin, fgaus->GetParameter(2));
 		g_spread_vsEta -> SetPointError(etaRing, 0.5 * etaRingWidth, fgaus->GetParError(2));
+		//std::cout<<"check stat Gaussian par 2 "<<fgaus->GetParameter(2)<<std::endl;
 
-		//   std::cout<<etaMin <<" "<<fgaus->GetParameter(2)<<std::endl;
+		//std::cout<<etaMin <<" "<<fgaus->GetParameter(2)<<"  Error  "<<fgaus->GetParError(2)<<std::endl;
 		if (hcmap2 == NULL)    RMSFile << etaMin << " " << fgaus->GetParameter(2) << "\n";
 	}
 }
@@ -768,7 +771,7 @@ void PhiFoldProfile_EB(TGraphErrors* g_avgIC_vsPhiFold_EBM, TGraphErrors* g_avgI
 
 			float phiRegionMin = hcmap->GetXaxis()->GetBinLowEdge(ibin);
 			int phiRegion = int( (fabs(phiRegionMin) - 1.) / phiRegionWidth ) % 20;
-
+			std::cout<<"phiRegionMin   "<<phiRegionMin<<"   phiRegion  "<<phiRegion<<std::endl;
 			float etaBinCenter = hcmap->GetYaxis()->GetBinCenter(jbin);
 
 			if( etaBinCenter < 0. ) h_IC_vsPhiFold_EBM.at(phiRegion) -> Fill(IC);

@@ -63,15 +63,25 @@ int main(int argc, char* argv[])
 
   //loop over bins to normalize to 1 each eta ring
   cout<<"> Normalization"<<endl;
+  //  cout<<"X Bins ="<<Eop_vs_Eta->GetNbinsX()<<endl;
+  // cout<<"Y Bins ="<<Eop_vs_Eta->GetNbinsY()<<endl;
+
   TH1D* Eop_projection;
   for(int ieta=1 ; ieta<Eop_vs_Eta->GetNbinsX()+1 ; ++ieta)
   {
     Eop_projection=Eop_vs_Eta->ProjectionY("_py",ieta,ieta,"");
+
+    //  if (!Eop_projection) {
+    //cout << "Projection failed for ieta = " << ieta << endl;
+    //continue;
+    //}
+
+    
     float Nev = Eop_projection->Integral(0,-1);//integral including underflow and overflow
-    cout<<"index"<<ieta-1
-	<<"entries"<<Eop_projection->GetEntries()
-	<<"integral"<<Eop_projection->Integral()
-	<<"integral with underoverflow"<<Nev<<endl;
+    cout<<"index "<<ieta-1
+	<<"        entries "<<Eop_projection->GetEntries()
+	<<"        integral "<<Eop_projection->Integral()
+	<<"        integral with underoverflow "<<Nev<<endl;
 
 
     if(Nev==0)

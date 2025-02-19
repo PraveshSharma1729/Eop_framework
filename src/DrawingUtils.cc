@@ -79,9 +79,13 @@ void DrawSpreadHisto(TH1F* h, const std::string& fileName, const std::string& fu
 	delete c;
 }
 
-
 void DrawSpreadGraph(TGraphErrors* g, const std::string& fileName, const std::string& fileType, const bool& isEB,
-                     TGraphErrors* g_stat)
+                      TGraphErrors* g_stat)
+
+
+///Changed by Pravesh Sharma on Jan 18 ,2025
+//void DrawSpreadGraph(TGraphErrors* g_stat, const std::string& fileName, const std::string& fileType, const bool& isEB,
+//                     TGraphErrors* g)
 {
 	TCanvas* c;
 
@@ -93,7 +97,7 @@ void DrawSpreadGraph(TGraphErrors* g, const std::string& fileName, const std::st
 		c -> SetGridy();
 
 		g_stat -> GetXaxis() -> SetRangeUser(0., 85.999);
-		g_stat -> GetYaxis() -> SetRangeUser(0.00, 0.05);
+		g_stat -> GetYaxis() -> SetRangeUser(0.00, 0.03);
 		g_stat -> GetXaxis() -> SetTitle("|i#eta|");
 		g_stat -> GetYaxis() -> SetTitle("#sigma");
 		g_stat -> Draw("AP");
