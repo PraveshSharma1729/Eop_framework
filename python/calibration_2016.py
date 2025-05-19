@@ -25,9 +25,16 @@ current_dir = os.getcwd();
 #tag_list = ["Run2017C"] #tag for the monitoring
 #ignored_ntuples_label_list = ["obsolete"]#ntuples containing anywhere in the path these labels will be ignored (eg ntuples within a tag containing some error)
 
-ntuple_dir = "/eos/cms/store/group/dpg_ecal/alca_ecalcalib/ecalelf/ntuples/13TeV/ALCARERECO/UltraRereco2017_2feb2019_AllCorrections/"
-tag_list = ["Run2017B","Run2017C","Run2017D","Run2017E","Run2017F"]
 ignored_ntuples_label_list = ["obsolete"]
+
+#ntuple_dir = "/eos/cms/store/group/dpg_ecal/alca_ecalcalib/ecalelf/ntuples/wangchu/2023IC/13.6TeV/124X_dataRun3_v15_newTiming_pulse_IC/Run2022G-EcalUncalZElectron-PromptReco-v1/allRange/"
+#ntuple_dir = "/eos/cms/store/group/dpg_ecal/alca_ecalcalib/ecalelf/ntuples/wangchu/2023IC/13.6TeV/124X_dataRun3_v15_newTiming_pulse_IC/"
+#tag_list = ["Run2022B"]
+
+#ntuple_dir = "/eos/cms/store/group/dpg_ecal/alca_ecalcalib/automation_repro/rereco2024CDE_v1/"
+ntuple_dir = "/eos/cms/store/group/dpg_ecal/alca_ecalcalib/ecalelf/ntuples/13TeV/ALCARERECO/103X_dataRun2_v6_ULBaseForICs_newRegV1/"
+tag_list = ["Run2016B","Run2016C","Run2016D","Run2016E","Run2016F","Run2016G","Run2016H"]
+
 
 #parse arguments
 parser = OptionParser()
@@ -96,7 +103,7 @@ if len(selected_filelist)>200:
             print(filename) 
 
 #create folder for the job
-job_parent_folder=current_dir+"/jobs_2017/"+str(options.label)+"/"
+job_parent_folder=current_dir+"/jobs_2016/"+str(options.label)+"/"
 os.system("mkdir -p "+job_parent_folder)
 
 #create the log folder

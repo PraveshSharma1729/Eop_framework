@@ -608,6 +608,49 @@ ICPhiFoldAvg<<endl;
 
   if( isEB == true )
   {
+
+    std::cout<<"  "<<std::endl;
+    std::cout<<"  "<<std::endl;
+    std::cout<<"  "<<std::endl;
+    std::cout<<"  "<<std::endl;
+    std::cout<<"  "<<std::endl;
+    std::cout<<"  "<<std::endl;
+    std::cout<<"  "<<std::endl;
+    std::cout<<"  "<<std::endl;
+        std::cout<<"  "<<std::endl;
+    std::cout<<"  "<<std::endl;
+    std::cout<<"  "<<std::endl;
+    std::cout<<"  "<<std::endl;
+    std::cout<<"  "<<std::endl;
+    std::cout<<"  "<<std::endl;
+    std::cout<<"  "<<std::endl;
+    std::cout<<"  "<<std::endl;
+        std::cout<<"  "<<std::endl;
+    std::cout<<"  "<<std::endl;
+    std::cout<<"  "<<std::endl;
+    std::cout<<"  "<<std::endl;
+    std::cout<<"  "<<std::endl;
+    std::cout<<"  "<<std::endl;
+    std::cout<<"  "<<std::endl;
+    std::cout<<"  "<<std::endl;
+        std::cout<<"  "<<std::endl;
+    std::cout<<"  "<<std::endl;
+    std::cout<<"  "<<std::endl;
+    std::cout<<"  "<<std::endl;
+    std::cout<<"  "<<std::endl;
+    std::cout<<"  "<<std::endl;
+    std::cout<<"  "<<std::endl;
+    std::cout<<"  "<<std::endl;
+        std::cout<<"  "<<std::endl;
+    std::cout<<"  "<<std::endl;
+    std::cout<<"  "<<std::endl;
+    std::cout<<"  "<<std::endl;
+    std::cout<<"  "<<std::endl;
+    std::cout<<"  "<<std::endl;
+    std::cout<<"  "<<std::endl;
+    std::cout<<"  "<<std::endl;
+        std::cout<<"This is for stat precision"<<std::endl;
+
     BookSpreadHistos_EB(h_spread_crackCorr, h_spread_vsEta_crackCorr, g_spread_vsEta_crackCorr, etaRingWidth,
 			"EB_spread_vsEta_crackCorr", nBins_spread, spreadMin, spreadMax,
 			h2_IC_crackCorr_phiNorm[0]);

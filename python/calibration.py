@@ -25,14 +25,14 @@ current_dir = os.getcwd();
 #tag_list = ["Run2017C"] #tag for the monitoring
 #ignored_ntuples_label_list = ["obsolete"]#ntuples containing anywhere in the path these labels will be ignored (eg ntuples within a tag containing some error)
 
-ignored_ntuples_label_list = ["merged", "jsonFilter", "Run2022A", "Run2022C", "Run2022D", "Run2022E", "Run2022F", "Run2022G"]
+ignored_ntuples_label_list = ["merged"]
 
 #ntuple_dir = "/eos/cms/store/group/dpg_ecal/alca_ecalcalib/ecalelf/ntuples/wangchu/2023IC/13.6TeV/124X_dataRun3_v15_newTiming_pulse_IC/Run2022G-EcalUncalZElectron-PromptReco-v1/allRange/"
 #ntuple_dir = "/eos/cms/store/group/dpg_ecal/alca_ecalcalib/ecalelf/ntuples/wangchu/2023IC/13.6TeV/124X_dataRun3_v15_newTiming_pulse_IC/"
 #tag_list = ["Run2022B"]
 
 ntuple_dir = "/eos/cms/store/group/dpg_ecal/alca_ecalcalib/automation_repro/rereco2024CDE_v1/"
-tag_list = ["Run2024C","Run2024D","Run2024E"]
+tag_list = ["Run2024CDE"]
 
 
 #parse arguments

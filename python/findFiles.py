@@ -13,10 +13,12 @@ import datetime
 
 def findFiles(ntuple_dir,ntuples_type,tag_list,ignored_ntuples_label_list,selected_filelist=[],extracalibtree_filelist=[]):
     #get ntuples for the calibration
-    #print(f"{ntuple_dir}:{ntuples_type}:{tag_list}:{ignored_ntuples_label_list}:{selected_filelist}:{extracalibtree_filelist}")
+  #  print(f"{ntuple_dir}:{ntuples_type}:{tag_list}:{ignored_ntuples_label_list}:{selected_filelist}:{extracalibtree_filelist}")
+    walk_data = list(os.walk(ntuple_dir))
+   # print(walk_data)
     #print(f"{os.walk(ntuple_dir)}")
     for root, dirs, files in os.walk(ntuple_dir):
-        #print(f"{root} : {dirs} : {files}")
+#        print(f"{root} : {dirs} : {files}")
         for file in files:
             #print(f"{file}")
             #print(f"{type_match(file,ntuples_type)}")
@@ -26,7 +28,9 @@ def findFiles(ntuple_dir,ntuples_type,tag_list,ignored_ntuples_label_list,select
                     if file.find("extraCalibTree")==-1:
                         selected_filelist.append(os.path.join(root, file))
                         extracalibtree_filename = generate_extracalibtree_filename(file,ntuples_type)
-                        #print(f"SJ!!! {extracalibtree_filename}")
+                       # print("Check\n")
+                       # print(f"SJ!!! {os.path.join(root, file)}")
+                       # print(f"SJ!!! {extracalibtree_filename}")
                         extracalibtree_filelist.append(os.path.join(root, extracalibtree_filename))
     return selected_filelist,extracalibtree_filelist
 
