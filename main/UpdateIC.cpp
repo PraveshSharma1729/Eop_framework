@@ -48,13 +48,18 @@ int main(int argc, char* argv[])
       return -1;
     }
 
+   const char* suffixes[3] = {"EB","EEm","EEp"};//ComputeIC writes one set of histos per subdetector
+   for(int isub=0; isub<3; ++isub)
+     {
+       TString suffix = suffixes[isub];
   //Load old ICs
   TH2D* oldIC=0;
   if(oldFileName!="")
   {
     cout<<">> Reading old ICs from "<<oldFileName.Data()<<"/"<<oldObjName.Data()<<endl;
     TFile oldFile(oldFileName.Data(),"READ");
-    oldIC = (TH2D*) oldFile.Get(oldObjName.Data());
+    //   oldIC = (TH2D*) oldFile.Get(oldObjName.Data());
+    oldIC = (TH2D*) oldFile.Get(oldObjName+suffix);
     oldIC->SetDirectory(0);
     oldFile.Close();
   }
@@ -62,19 +67,25 @@ int main(int argc, char* argv[])
   //Load new (incomplete) ICs
   cout<<">> Reading new numerator and denominator from "<<newFileName.Data()<<endl;
   TFile newFile(newFileName.Data(),"UPDATE");
-  TH2D* numerator = (TH2D*)newFile.Get("numeratorEB");
-  TH2D* denominator = (TH2D*)newFile.Get("denominatorEB");
-  TH2D* ICpull = (TH2D*)numerator->Clone("ICpull");//the initial content does not matter 
-  TH2D* temporaryIC = (TH2D*)newFile.Get("temporaryICEB");
-
+  //  TH2D* numerator = (TH2D*)newFile.Get("numerator");
+  //  TH2D* denominator = (TH2D*)newFile.Get("denominator");
+  //  TH2D* ICpull = (TH2D*)numerator->Clone("ICpull");//the initial content does not matter 
+  //  TH2D* temporaryIC = (TH2D*)newFile.Get("temporaryIC");
+  
+  TH2D* numerator = (TH2D*)newFile.Get("numerator"+suffix);
+  TH2D* denominator = (TH2D*)newFile.Get("denominator"+suffix);
+  TH2D* ICpull = (TH2D*)numerator->Clone("ICpull"+suffix);//the initial content does not matter
+  TH2D* temporaryIC = (TH2D*)newFile.Get("temporaryIC"+suffix);
   //Reset objects that are in general wrongly filled by hadd
   ICpull->Reset();
   temporaryIC->Reset();
   //Create and fill ICpull and newIC
   TH2D* newIC = (TH2D*)temporaryIC->Clone();
-  newIC->SetName(newObjName.Data());
-  newIC->SetTitle(newObjName.Data());
-
+  //  newIC->SetName(newObjName.Data());
+  //  newIC->SetTitle(newObjName.Data());
+  newIC->SetName(newObjName+suffix);
+  newIC->SetTitle(newObjName+suffix);
+  
   ICpull->Divide(numerator,denominator,1.,1.);//ICpull[i]=numerator[i]/denominator[i]
 
   if(oldFileName!="")
@@ -82,8 +93,10 @@ int main(int argc, char* argv[])
   else
   {
     newIC=(TH2D*)ICpull->Clone();
-    newIC->SetName(newObjName.Data());
-    newIC->SetTitle(newObjName.Data());
+    //    newIC->SetName(newObjName.Data());
+    //    newIC->SetTitle(newObjName.Data());
+    newIC->SetName(newObjName+suffix);
+    newIC->SetTitle(newObjName+suffix);
   }
 
   //Overwrite the newIC file
@@ -95,7 +108,8 @@ int main(int argc, char* argv[])
   newFile.Close();
 
   if(oldIC)
-    delete oldIC;  
+    delete oldIC;
+   }
   return 0;
 }
 

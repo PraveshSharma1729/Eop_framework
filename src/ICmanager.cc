@@ -69,9 +69,32 @@ void ICmanager::LoadIC(const std::vector<std::string> &ICcfg)
     else
     {
       string objkey(inputtype);
-      cout<<"> Loading IC from "<<filename<<"/"<<objkey<<endl;
+      //      cout<<"> Loading IC from "<<filename<<"/"<<objkey<<endl;
       TFile* inICfile = new TFile(filename.c_str(),"READ");
       TH2D* ICmap = (TH2D*) inICfile->Get(objkey.c_str());
+      //if objkey is not found, look for the maps written by UpdateIC: objkey+"EB", objkey+"EEm", objkey+"EEp"
+      if(!ICmap)
+      {
+        IC icvalues;
+        const char* suffixes[3] = {"EEm","EB","EEp"};//index = iz+1
+        for(int iz=-1; iz<=1; ++iz)
+        {
+          TH2D* ICmapSub = (TH2D*) inICfile->Get((objkey+suffixes[iz+1]).c_str());
+          if(!ICmapSub)
+          {
+            cout<<"[ERROR]: "<<objkey<<" and "<<objkey<<suffixes[iz+1]<<" not found in "<<filename<<endl;
+            exit(-1);
+          }
+          cout<<"> Loading IC from "<<filename<<"/"<<objkey<<suffixes[iz+1]<<endl;
+          IC icvaluesSub = GetICFromTH2D(ICmapSub,iz);
+          for(auto &x : icvaluesSub)
+            for(auto &y : x.second)
+              icvalues[x.first][y.first][iz] = y.second[iz];
+        }
+        timedependent_ICvalues_.push_back( icvalues );
+        inICfile->Close();
+        return;
+      }
       int iz=0;
       if(objkey.find("EEm")!=std::string::npos || objkey.find("EEM")!=std::string::npos)
 	iz=-1;

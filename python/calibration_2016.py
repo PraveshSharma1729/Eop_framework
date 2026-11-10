@@ -167,9 +167,9 @@ for iLoop in range(options.RestartFromLoop,options.Nloop):
                 outScript = open(outScriptName,"w")
                 outScript.write("#!/bin/bash\n")
                 #outScript.write('source setup.sh\n')
-                outScript.write("#cd /afs/cern.ch/work/f/fmonti/flashggNew/CMSSW_10_5_0/\n")
-                outScript.write('#eval `scram runtime -sh`\n');
-                outScript.write("#cd -\n");
+                outScript.write("cd /afs/cern.ch/user/p/pravesh/private/Eop/CMSSW_14_0_22/\n")
+                outScript.write('eval `scram runtime -sh`\n');
+                outScript.write("cd -\n");
                 outScript.write("echo $PWD\n");
                 outScript.write(
                     str(options.exedir)+"/"+task+".exe"+
@@ -205,9 +205,9 @@ for iLoop in range(options.RestartFromLoop,options.Nloop):
             mergescriptName=job_parent_folder+"/merge_"+task+"_loop_"+str(iLoop)+".sh"
             mergescript = open( mergescriptName,"w")
             mergescript.write("#!/bin/bash\n")
-            mergescript.write("#cd /afs/cern.ch/work/f/fmonti/flashggNew/CMSSW_10_5_0/\n")
-            mergescript.write('#eval `scram runtime -sh`\n');
-            mergescript.write("#cd -\n");
+            mergescript.write("cd /afs/cern.ch/user/p/pravesh/private/Eop/CMSSW_14_0_22/\n")
+            mergescript.write('eval `scram runtime -sh`\n');
+            mergescript.write("cd -\n");
             mergescript.write("hadd -f -k "+str(options.outdir)+"/EopEta_loop_"+str(iLoop)+".root "+str(options.outdir)+"/EopEta_loop_"+str(iLoop)+"_file_*_*.root\n")
             mergescript.write(str(options.exedir)+"/NormalizeBuildEopEta.exe --Eopweight TH2F EopEta "+str(options.outdir)+"/EopEta_loop_"+str(iLoop)+".root\n")
             mergescript.close()
@@ -216,9 +216,9 @@ for iLoop in range(options.RestartFromLoop,options.Nloop):
             mergescriptName=job_parent_folder+"/merge_"+task+"_loop_"+str(iLoop)+".sh"
             mergescript = open( mergescriptName,"w")
             mergescript.write("#!/bin/bash\n")
-            mergescript.write("#cd /afs/cern.ch/work/f/fmonti/flashggNew/CMSSW_10_5_0/\n")
-            mergescript.write('#eval `scram runtime -sh`\n');
-            mergescript.write("#cd -\n");
+            mergescript.write("cd /afs/cern.ch/user/p/pravesh/private/Eop/CMSSW_14_0_22/\n")
+            mergescript.write('eval `scram runtime -sh`\n');
+            mergescript.write("cd -\n");
             mergescript.write("hadd -f -k "+str(options.outdir)+"/IC_loop_"+str(iLoop)+".root "+str(options.outdir)+"/IC_loop_"+str(iLoop)+"_file_*_*.root\n")
             if iLoop==0:
                 mergescript.write(str(options.exedir)+"/UpdateIC.exe --newIC IC "+str(options.outdir)+"/IC_loop_"+str(iLoop)+".root\n")

@@ -282,8 +282,8 @@ int main(int argc, char **argv)
     TFile* inFileEEM = new TFile(inFileNameEEM.c_str(), "READ");
     TFile* inFileEEP = new TFile(inFileNameEEP.c_str(), "READ");
 
-    h2_IC_raw[-1] = (TH2F*)( inFileEEM->Get("IC") );//to be fixed to run separately EEp or EEm
-    h2_IC_raw[1]  = (TH2F*)( inFileEEP->Get("IC") );
+    h2_IC_raw[-1] = (TH2F*)( inFileEEM->Get("ICEEm") );//to be fixed to run separately EEp or EEm
+    h2_IC_raw[1]  = (TH2F*)( inFileEEP->Get("ICEEp") );
     h2_IC_raw[-1]->SetDirectory(0);
     h2_IC_raw[1]->SetDirectory(0);
     inFileEEM->Close();
@@ -318,10 +318,10 @@ int main(int argc, char **argv)
       TFile* inFileEEPEven = new TFile(inFileNameEEPEven.c_str(), "READ");
       TFile* inFileEEPOdd = new TFile(inFileNameEEPOdd.c_str(), "READ");
 
-      h2_ICEven_raw[-1] = (TH2F*)( inFileEEMEven->Get("IC") );
-      h2_ICEven_raw[1]  = (TH2F*)( inFileEEPEven->Get("IC") );
-      h2_ICOdd_raw[-1 ] = (TH2F*)( inFileEEMOdd ->Get("IC") );
-      h2_ICOdd_raw[1]   = (TH2F*)( inFileEEPOdd ->Get("IC") );
+      h2_ICEven_raw[-1] = (TH2F*)( inFileEEMEven->Get("ICEEm") );
+      h2_ICEven_raw[1]  = (TH2F*)( inFileEEPEven->Get("ICEEp") );
+      h2_ICOdd_raw[-1 ] = (TH2F*)( inFileEEMOdd ->Get("ICEEm") );
+      h2_ICOdd_raw[1]   = (TH2F*)( inFileEEPOdd ->Get("ICEEp") );
 
       h2_ICEven_raw[-1] -> SetDirectory(0);
       h2_ICEven_raw[1]  -> SetDirectory(0);
@@ -763,22 +763,22 @@ int main(int argc, char **argv)
   //------------------------------------------------------
   // Dump IC in a txt file ---> IC from isolated electrons
   std::ofstream outTxt((outputFolder + "/" + outputTxt + "_relative.txt").c_str(), std::ios::out);
-  //outTxt << "---------------------------------------------------------------" << std::endl;
-  //if( isEB == true )
-  //  outTxt << std::fixed << std::setprecision(0) << std::setw(10) << "iEta"
-  //         << std::fixed << std::setprecision(0) << std::setw(10) << "iPhi"
-  //         << std::fixed << std::setprecision(0) << std::setw(10) << "iZ"
-  //         << std::fixed << std::setprecision(6) << std::setw(15) << "IC"
-  //         << std::fixed << std::setprecision(6) << std::setw(15) << "error"
-  //         << std::endl;
-  //else
-  //  outTxt << std::fixed << std::setprecision(0) << std::setw(10) << "iX"
-  //         << std::fixed << std::setprecision(0) << std::setw(10) << "iY"
-  //         << std::fixed << std::setprecision(0) << std::setw(10) << "iZ"
-  //         << std::fixed << std::setprecision(6) << std::setw(15) << "IC"
-  //         << std::fixed << std::setprecision(6) << std::setw(15) << "error"
-  //         << std::endl;
-  //outTxt << "---------------------------------------------------------------" << std::endl;
+  outTxt << "---------------------------------------------------------------" << std::endl;
+  if( isEB == true )
+    outTxt << std::fixed << std::setprecision(0) << std::setw(10) << "iEta"
+           << std::fixed << std::setprecision(0) << std::setw(10) << "iPhi"
+           << std::fixed << std::setprecision(0) << std::setw(10) << "iZ"
+           << std::fixed << std::setprecision(6) << std::setw(15) << "IC"
+           << std::fixed << std::setprecision(6) << std::setw(15) << "error"
+           << std::endl;
+  else
+    outTxt << std::fixed << std::setprecision(0) << std::setw(10) << "iX"
+           << std::fixed << std::setprecision(0) << std::setw(10) << "iY"
+           << std::fixed << std::setprecision(0) << std::setw(10) << "iZ"
+           << std::fixed << std::setprecision(6) << std::setw(15) << "IC"
+           << std::fixed << std::setprecision(6) << std::setw(15) << "error"
+           << std::endl;
+  outTxt << "---------------------------------------------------------------" << std::endl;
   
   std::map<int, TH2F*> h2_final;
   if( isEB == true)

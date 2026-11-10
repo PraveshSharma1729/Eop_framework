@@ -21,8 +21,15 @@ def findFiles(ntuple_dir,ntuples_type,tag_list,ignored_ntuples_label_list,select
                         selected_filelist.append(os.path.join(root, file))
                         extracalibtree_filename = generate_extracalibtree_filename(file,ntuples_type)
                         extracalibtree_filelist.append(os.path.join(root, extracalibtree_filename))
-    return selected_filelist,extracalibtree_filelist
 
+    print("\n=== Selected ntuple files ===")
+    for f in selected_filelist:
+        print(f)
+
+    print("\n=== ExtraCalibTree files ===")
+    for f in extracalibtree_filelist:
+        print(f)
+    return selected_filelist,extracalibtree_filelist
 
 def type_match(filename,ntuples_type):
     if not filename.endswith(".root"):

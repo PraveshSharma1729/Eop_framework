@@ -41,4 +41,7 @@
 *.png
 
 # build directory
-build
+build__pycache__/
+
+build/
+__pycache__/

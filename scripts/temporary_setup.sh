@@ -8,7 +8,7 @@ export BASEDIRECTORY
 
 if [[ $BASEDIRECTORY == /afs/* ]];
 then
-    cd /afs/cern.ch/user/f/fmonti/work/flashggNew/CMSSW_10_5_0/src/
+    cd /afs/cern.ch/user/p/pravesh/private/Eop/CMSSW_14_0_22/src/
     #cd /afs/cern.ch/user/f/fmonti/work/EoP_harness/CMSSW_10_1_2/src/
     eval `scram runtime -sh`
     cd -
